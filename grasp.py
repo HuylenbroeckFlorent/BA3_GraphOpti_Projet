@@ -10,7 +10,7 @@ CoutOpti = inf
 
 def init():
     file = input("Fichier à tester (sans le .dat): ")
-    with open("../instances/"+file+".dat",'r') as f:
+    with open("./instances/"+file+".dat",'r') as f:
         Taille = int(f.readline().split()[0])
         i = 0
         f.readline()

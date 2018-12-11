@@ -1,3 +1,5 @@
+from __future__ import division
+
 from read_QAP import read_QAP
 
 size=0
@@ -14,8 +16,8 @@ def ant(alpha, beta):
 def compute_probability(alpha,beta,s,elements):
 	return
 
-def visible(e1,e2):
-	return
+def visibility(e1,e2):
+	return 1/D[e1][e2]
 
 def ant_colony(N,alpha,beta,Q,omega):
 	return
@@ -25,14 +27,5 @@ def drop_pheromones(s,Q):
 
 def evaporate_pheromone(omega):
 	return
-
-def _print():
-	print(size)
-	print('\nD=')
-	for d in D:
-		print(d)
-	print('\nF=')
-	for f in F:
-		print(f)
 
 init('./instances/nug12.dat')
