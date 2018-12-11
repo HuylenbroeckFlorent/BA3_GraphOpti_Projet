@@ -1,3 +1,23 @@
+Taille = 0
+D = []
+F = []
+
+def init():
+    file = input("Fichier à tester (sans le .dat)")
+    with open("../instances/"+file+".dat",'r') as f:
+        Taille = int(f.readline().split()[0])
+        i = 0
+        f.readline()
+        for ligne in f.readlines():
+            if i<Taille:
+                if ligne[0]!='\n':
+                    D.append([int(i) for i in ligne.split()])
+                i+=1
+            else:
+                if ligne[0]!='\n':
+                    F.append([int(i) for i in ligne.split()])
+                i+=1
+
 
 def calculer_proba(alpha,s,elements):
     RESTE = []
@@ -24,4 +44,7 @@ def glouton_proba(alpha):
         for i in e:
             if not (i in s):
                 s.append(i)
-    retour s
+    return s
+
+if __name__ == '__main__':
+    init()
