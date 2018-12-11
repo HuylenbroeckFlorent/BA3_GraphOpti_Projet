@@ -26,8 +26,7 @@ def init():
         INIT = []
         for i in range(Taille):
             INIT.append(i+1)
-        VoisinageG.append(INIT)
-        VoisinageG.append(voisins(INIT))
+        VoisinageG = voisins(INIT)
         print(len(VoisinageG))
         for ligne in VoisinageG:
             print(ligne)

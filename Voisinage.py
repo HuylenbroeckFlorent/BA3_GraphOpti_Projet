@@ -2,6 +2,7 @@ import copy
 
 def voisins(s):
     voisins = []
+    voisins.append(s)
     interINIT = copy.deepcopy(s)
     for i in range(len(s)):
         for j in range(i+1,len(s)):
