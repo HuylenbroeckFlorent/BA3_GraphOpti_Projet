@@ -7,7 +7,7 @@ def calculer_proba(alpha,s,elements):
     prob = []
     #min = min{coût(s U {e}/ e € RESTE)}
     #max = max{coût(s U {e}/ e € RESTE)}
-    #RCL = {e € RESTE, min<=coût(s U {e})<=max}
+    #RCL = {e € RESTE, min<=coût(s U {e})<=min+alpha*(max-min)}
     for e in RESTE:
         if e in RCL:
             prob[e] = 1/(len(RCL))
