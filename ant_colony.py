@@ -4,7 +4,8 @@ size=0
 D=[]
 F=[]
 
-def _init(path):
+def init(path):
+	global size,D,F
 	size,D,F=read_QAP(path)
 
 def ant(alpha, beta):
@@ -34,7 +35,4 @@ def _print():
 	for f in F:
 		print(f)
 
-_init('./instances/nug12.dat')
-_print()
-init("./instances/tai100a.dat")
-_print()
+init('./instances/nug12.dat')
