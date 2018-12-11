@@ -1,9 +1,14 @@
+from math import *
+import copy
 Taille = 0
 D = []
 F = []
+VoisinageG = []
+Solution = []
+CoutOpti = inf
 
 def init():
-    file = input("Fichier à tester (sans le .dat)")
+    file = input("Fichier à tester (sans le .dat): ")
     with open("../instances/"+file+".dat",'r') as f:
         Taille = int(f.readline().split()[0])
         i = 0
@@ -17,6 +22,19 @@ def init():
                 if ligne[0]!='\n':
                     F.append([int(i) for i in ligne.split()])
                 i+=1
+        INIT = []
+        for i in range(Taille):
+            INIT.append(i+1)
+        interINIT = copy.deepcopy(INIT)
+        for i in range(Taille):
+            for j in range(i,Taille):
+                inter = interINIT[i]
+                interINIT[i] = interINIT[j]
+                interINIT[j] = inter
+                Voisinage.append(interINIT)
+                interINIT = copy.deepcopy(INIT)
+        for ligne in Voisinage:
+            print(ligne)
 
 
 def calculer_proba(alpha,s,elements):
@@ -25,8 +43,8 @@ def calculer_proba(alpha,s,elements):
         if not(i in elements):
             RESTE.append(i)
     prob = []
-    #min = min{coût(s U {e}/ e € RESTE)}
-    #max = max{coût(s U {e}/ e € RESTE)}
+    #min = min{coût(s U {e}| e € RESTE)}
+    #max = max{coût(s U {e}| e € RESTE)}
     #RCL = {e € RESTE, min<=coût(s U {e})<=min+alpha*(max-min)}
     for e in RESTE:
         if e in RCL:
