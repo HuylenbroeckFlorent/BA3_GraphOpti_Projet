@@ -1,5 +1,6 @@
 from math import *
 import copy
+from Voisinage import voisins
 Taille = 0
 D = []
 F = []
@@ -25,16 +26,13 @@ def init():
         INIT = []
         for i in range(Taille):
             INIT.append(i+1)
-        interINIT = copy.deepcopy(INIT)
-        for i in range(Taille):
-            for j in range(i,Taille):
-                inter = interINIT[i]
-                interINIT[i] = interINIT[j]
-                interINIT[j] = inter
-                Voisinage.append(interINIT)
-                interINIT = copy.deepcopy(INIT)
-        for ligne in Voisinage:
+        VoisinageG.append(INIT)
+        VoisinageG.append(voisins(INIT))
+        print(len(VoisinageG))
+        for ligne in VoisinageG:
             print(ligne)
+
+#def cout(s):
 
 
 def calculer_proba(alpha,s,elements):
