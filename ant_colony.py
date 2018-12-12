@@ -5,9 +5,9 @@ import time
 
 import numpy as np
 import numpy.random as np_random
-from threading import Thread
 
 from read_QAP import read_QAP
+from ant import ant
 
 #sys.tracebacklimit=0
 
@@ -35,6 +35,8 @@ size=0
 distances=[]
 flows=[]
 N=10
+alpha=0.1
+beta=0.1
 Q=100
 
 time.clock()
@@ -55,26 +57,15 @@ current_min_cost=min([cost_function(perm) for perm in permutations])
 
 pheromones=np.ones((size,size))*(1/Q*current_min_cost)
 
+ants=[]
+for permutation in permutations:
+	ants.append(ant(alpha,beta,permutation,pheromones))
+
+ants[0].run()
+
+
 t_1=time.clock()
 
 #Make sure we're still within allocated time
 while time.clock()<max_time-t_1:
 	x=2
-
-
-class ant(Thread):
-	def __init__(self, alpha, beta, permutation):
-		self.alpha=alpha
-		self.beta=beta
-		self.permutation=permutation
-		return
-
-	def compute_probability(alpha,beta,current_location,other_location):
-
-		return
-
-	def visibility(e1,e2):
-		return 1/D[e1][e2]
-
-	def drop_pheromones(s,Q):
-		return
