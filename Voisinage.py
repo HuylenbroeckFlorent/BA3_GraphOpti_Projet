@@ -11,5 +11,3 @@ def voisins(s):
             voisins.append(interINIT)
             interINIT = copy.deepcopy(s)
     return voisins
-
-print(voisins([1,2,3]))

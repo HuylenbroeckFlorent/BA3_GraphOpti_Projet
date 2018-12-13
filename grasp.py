@@ -2,6 +2,7 @@ from math import *
 import copy
 from Voisinage import voisins
 import random
+import time
 
 alphas = [0,10,20,30,40,50,60,70,80,90,100]
 Taille = 0
@@ -9,6 +10,8 @@ D = []
 F = []
 VoisinageG = []
 Solution = []
+Objectif = []
+CoutObjectif = 0
 INIT = []
 CoutOpti = inf
 
@@ -30,7 +33,12 @@ def init():
                 i+=1
         for i in range(Taille):
             INIT.append(i)
-        VoisinageG = voisins(INIT)
+    with open("../instances/"+file+".sln",'r') as f:
+        global CoutObjectif
+        CoutObjectif = int(f.readline().split()[1])
+        obj = f.readline().split()
+        for usine in obj:
+            Objectif.append(int(usine)-1)
 
 
 def Coute(s):
@@ -42,7 +50,7 @@ def Coute(s):
 
 def initialiser(elements):
     s = []
-    s.append(random.randint(1,Taille))
+    s.append(random.choice(elements))
     return s
 
 def incomplet(s):
@@ -107,17 +115,45 @@ def glouton_proba(Alpha):
                 s.append(i)
     return s
 
-def optimize(s,m):
+def find_best(sol):
+    Voisins = voisins(sol)
+    best = sol
+    for v in Voisins:
+        if Coute(v) < Coute(best):
+            best = v
+    return best
+
+def optimal_local(sol):
+    Voisins = voisins(sol)
+    optimal = True
+    for v in Voisins:
+        if Coute(v)<Coute(sol):
+            optimal = False
+    return optimal
+
+def recherche_locale(sol):
+    solution = copy.copy(sol)
+    while not(optimal_local(solution)):
+        solution = find_best(solution)
+    return solution
+
+
+def optimize(s):
     global Solution,CoutOpti
     test = Coute(s)
     if test<CoutOpti:
         CoutOpti = test
+        print("Optimizer Start")
         Solution = s
 
 if __name__ == '__main__':
     init()
-    while True:
+    init_time = int(time.time())
+    print(init_time)
+    while (int(time.time())-init_time) < 60 and ((Solution!=Objectif) and (CoutOpti!=CoutObjectif)):
         s = glouton_proba(0.5)
         s_ = recherche_locale(s)
         optimize(s_)
-    print("%d  %d" Taille,CoutOpti)
+    print(int(time.time()))
+    print(Taille,CoutOpti)
+    print(Solution)
