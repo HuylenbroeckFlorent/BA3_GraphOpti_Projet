@@ -185,15 +185,17 @@ def optimize(s):
 
 if __name__ == '__main__':
     init()
+    #alpha = random.choice(alphas)/100
     init_time = int(time.time())
+    #print("Notre glouton aura une probabilité de "+str(alpha*100)+"%")
     if CoutObjectif>0 and Objectif!=[]:
         while (int(time.time())-init_time) < 60 and ((Solution!=Objectif) and (CoutOpti>CoutObjectif)):
-            s = glouton_proba(0.5)
+            s = glouton_proba(0.8)
             s_ = recherche_locale(s)
             optimize(s_)
     else:
         while (int(time.time())-init_time) < 60:
-            s = glouton_proba(0.5)
+            s = glouton_proba(0.8)
             s_ = recherche_locale(s)
             optimize(s_)
     print("Temps Pris = ", end=" ")
