@@ -1,11 +1,14 @@
 from __future__ import division
 
+import sys
+
 from threading import Thread
 import numpy as np
 import numpy.random as np_random
 from copy import deepcopy
 
-from ant_util import swap_by_indexes
+sys.path.append('../util')
+from util import swap_by_indexes
 
 #TODO document this shit
 class ant(Thread):

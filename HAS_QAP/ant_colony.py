@@ -1,15 +1,16 @@
 from __future__ import division
 
 import sys
-import time
+import time 
 
 from copy import deepcopy
 import numpy as np
 import numpy.random as np_random
 
-from read_QAP import read_QAP
+#Needed for importing read_QAP
+sys.path.append('../util')
+from util import read_QAP, swap_by_indexes
 from ant import ant
-from ant_util import swap_by_indexes
 
 #sys.tracebacklimit=0
 
