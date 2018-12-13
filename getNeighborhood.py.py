@@ -1,10 +1,10 @@
 import copy
 
 def swapij(tab,i,j):
-    result=copy.deepcopy(tab)
-    result[i]=tab[j]
-    result[j]=tab[i]
-    return result
+    tmp=tab[i]
+    tab[i]=tab[j]
+    tab[j]=tmp
+    return tab
 
 def getNeighborhood(perm):
     neighborhood=[]
