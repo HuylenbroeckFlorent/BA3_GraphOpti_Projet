@@ -31,7 +31,6 @@ class ant(Thread):
 		for i in range(self.R):
 			self.pheromone_trail_swaps()
 			self.local_search(self.permutation)
-			i+=i
 		if self.intensification and prev_cost<self.cost_function(self.permutation):
 			self.permutation=prev_permutation
 		return

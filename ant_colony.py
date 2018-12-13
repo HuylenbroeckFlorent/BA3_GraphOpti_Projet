@@ -141,13 +141,13 @@ permutations=[local_search(permutation) for permutation in generate_permutations
 all_time_best_permutation=deepcopy(min(permutations, key=cost_function))
 
 #Solutions found by previous iteration (only for comparing as a whole, so keeping the sum is easier and faster)
-previous_solutions=sum([cost_function(permutation) for permutation in permutations])
+previous_solutions=np.inf
 
 #Initialize pheromones
 init_pheromones()
 
 #Intensification trigger
-intensification=False
+intensification=True
 
 #Initialze first ants
 ants=[]
@@ -193,7 +193,7 @@ while time.clock()<max_time-t_1:
 		intensification=False
 
 	#Update all time best solutions
-	all_time_best_permutation=deepcopy(min(all_time_best_permutation,iteration_best_permutation, key=cost_function))
+	all_time_best_permutation=deepcopy(min([all_time_best_permutation,iteration_best_permutation], key=cost_function))
 
 	#Drop pheromones on the current best solution
 	drop_pheromones(all_time_best_permutation)
