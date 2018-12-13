@@ -176,9 +176,12 @@ def optimize(s):
     global Solution,CoutOpti
     test = Coute(s)
     if test<CoutOpti:
+        print("-------------------------------------------------------------")
+        print("OLD :\n Solution = "+str(Solution)+"\n Cost = "+str(CoutOpti))
         CoutOpti = test
-        print("Optimizer Start")
         Solution = s
+        print("NEW :\n Solution = "+str(Solution)+"\n Cost = "+str(CoutOpti))
+        print("-------------------------------------------------------------")
 
 if __name__ == '__main__':
     init()
