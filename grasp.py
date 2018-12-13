@@ -3,7 +3,7 @@ import copy
 from Voisinage import voisins
 import random
 
-alphas = {0,10,20,30,40,50,60,70,80,90,100}
+alphas = [0,10,20,30,40,50,60,70,80,90,100]
 Taille = 0
 D = []
 F = []
@@ -15,6 +15,7 @@ CoutOpti = inf
 def init():
     file = input("Fichier à tester (sans le .dat): ")
     with open("../instances/"+file+".dat",'r') as f:
+        global Taille,D,F,VoisinageG,INIT
         Taille = int(f.readline().split()[0])
         i = 0
         f.readline()
@@ -30,8 +31,14 @@ def init():
         for i in range(Taille):
             INIT.append(i)
         VoisinageG = voisins(INIT)
+        i = random.randint(0,Taille)
+        j = random.randint(0,Taille)
+        while(i==j):
+            i = random.randint(0,Taille)
+            j = random.randint(0,Taille)
+        INIT = VoisinageG[i][j]
 
-def cout(s):
+def Coute(s):
     c = 0
     for i in range(len(s)):
         for j in range(len(s)):
@@ -46,59 +53,75 @@ def initialiser(elements):
 def incomplet(s):
     return len(s)<Taille
 
-def perm(s,alpha,min,max):
-    return cout(s)<=(min + alpha*(max-min))
+def perm(s,Alpha,mini,maxi):
+    test = Coute(s)
+    return test <= mini+Alpha*(maxi-mini)
 
-def rcl(s,elements,min,max,alpha):
+def rcl(s,elements,mini,maxi,Alpha):
     RCL = []
     sub = copy.copy(s)
     for e in elements :
-        sub.append(e)
-        if perm(sub,alpha,min,max):
-            RCL.append(sub
+        if not (e in sub):
+            sub.append(e)
+        if perm(sub,Alpha,mini,maxi):
+            RCL.append(e)
         sub = copy.copy(s)
     return RCL
 
 def Min_Max(s,elements):
     sub = copy.copy(s)
-    max = 0
-    min = math.inf
+    maxi = 0
+    mini = inf
     for e in elements:
         sub.append(e)
-        test = cout(sub)
-        min = min(test,min)
-        max = max(test,max)
+        test = Coute(sub)
+        mini = min(test, mini)
+        maxi = max(test, maxi)
         sub = copy.copy(s)
-    return min,max
+    return mini,maxi
 
-def calculer_proba(alpha,s,elements):
+def calculer_proba(Alpha,s,elements):
     RESTE = []
-    for i in s:
-        if not(i in elements):
+    for i in elements:
+        if not(i in s):
             RESTE.append(i)
-    prob = []
+    prob = Taille*[0]
     mini,maxi = Min_Max(s,RESTE)
-    RCL = rcl(s,RESTE,mini,maxi,alpha)
+    RCL = rcl(s,RESTE,mini,maxi,Alpha)
     for e in RESTE:
         if e in RCL:
-            prob.append(1/len(RCL))
-        else:
-            prob.append(0)
+            prob[e] = 1/(len(RCL))
     return prob
 
 def select_proba(prob,s,elements):
-    return
+    sol = []
+    for i in range(len(prob)):
+        proba = random.randint(0,100)
+        if proba<=(prob[i]*100):
+            sol.append(elements[i])
+    return sol
 
-def glouton_proba(alpha):
+def glouton_proba(Alpha):
     e = initialiser(INIT)
-    s = e[:]
+    s = copy.copy(e)
     while incomplet(s):
-        prob = calculer_proba(alpha,s,INIT)
+        prob = calculer_proba(Alpha,s,INIT)
         e = select_proba(prob,s,INIT)
         for i in e:
             if not (i in s):
                 s.append(i)
     return s
 
+def optimize(s,m):
+    global Solution,CoutOpti
+    if Coute(s)<CoutOpti:
+        CoutOpti = Coute(s)
+        Solution = s
+
 if __name__ == '__main__':
     init()
+    while true:
+        s = glouton_proba(0.5)
+        s_ = recherche_locale(s)
+        optimize(s_,CoutOpti)
+    print("%d  %d" Taille,CoutOpti)
