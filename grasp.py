@@ -60,11 +60,11 @@ def init():
                 i+=1
         for i in range(Taille):
             INIT.append(i)
-    test = input("Ce fichier a-t-il une solution? [Y/N]")
-    if "y" in test or "Y" in test:
-        test = input("A-t-il le même nom? [Y/N]")
+    test2 = input("Ce fichier a-t-il une solution? [Y/N]")
+    if "y" in test2 or "Y" in test2:
+        test3 = input("A-t-il le même nom? [Y/N]")
         path = ""
-        if "y" in test or "Y" in test:
+        if "y" in test3 or "Y" in test3:
             path = "../instances/"+fileName+".sln"
         else:
             path = input("Veuillez entrer le chemin absolu du fichier :")
@@ -183,19 +183,26 @@ def optimize(s):
 if __name__ == '__main__':
     init()
     init_time = int(time.time())
-    while (int(time.time())-init_time) < 60 and ((Solution!=Objectif) and (CoutOpti>CoutObjectif)):
-        s = glouton_proba(0.5)
-        s_ = recherche_locale(s)
-        optimize(s_)
+    if CoutObjectif>0 and Objectif!=[]:
+        while (int(time.time())-init_time) < 60 and ((Solution!=Objectif) and (CoutOpti>CoutObjectif)):
+            s = glouton_proba(0.5)
+            s_ = recherche_locale(s)
+            optimize(s_)
+    else:
+        while (int(time.time())-init_time) < 60:
+            s = glouton_proba(0.5)
+            s_ = recherche_locale(s)
+            optimize(s_)
     print("Temps Pris = ", end=" ")
     print(int(time.time())-init_time,"s")
     if CoutObjectif>0 and Objectif!=[]:
         if CoutOpti>CoutObjectif :
             print("Solution et cout total non optimaux")
             print("Difference de ",CoutOpti-CoutObjectif," avec la solution optimale")
+            print("objectif=",CoutObjectif)
         else:
             print("Solution et cout total optimaux")
-    print("objectif=",CoutObjectif)
+            print("objectif=",CoutObjectif)
     print(Taille,CoutOpti)
     for i in range(len(Solution)):
         Solution[i]+=1
