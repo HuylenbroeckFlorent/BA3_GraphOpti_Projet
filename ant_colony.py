@@ -20,24 +20,23 @@ def open(path):
 def reinitialize():
 	#Generate N-1 random permutations and apply a local search on them
 	global permutations, all_time_best_permutation
-	tmp_permutations=[local_search(permutation) for permutation in generate_permutations(N-1)]
-	tmp_permutations.append(all_time_best_permutation)
-	permutations=sorted(tmp_permutations,key=cost_function)
+	permutations=[local_search(permutation) for permutation in generate_permutations(N-1)]
+	permutations.append(all_time_best_permutation)
 
 	#Reinitialize pheromones
 	init_pheromones()
 
 	#Reset intensification trigger
 	global intensification
-	intensification=False
+	intensification=True
 
 	#Reset diversification_trigger 
 	global diversification_trigger
 	diversification_trigger=0
 
 	#Boolean for constructing ants purpose
-	global diversification_was_this_iteration
-	diversification_was_this_iteration=True
+	global diversification_happened_this_iteration
+	diversification_happened_this_iteration=True
 
 #Generates inital permutations for every ants
 def generate_permutations(N):
@@ -66,14 +65,16 @@ def swap_cost_function(s,i,j):
 
 #Local search function for a solution s
 def local_search(s):
-	for reps in range(2):
+	initial_s=deepcopy(s)
+	for _ in range(2):
 		for i in np_random.permutation(range(size)):
 			for j in np_random.permutation(range(size)):
 				if j==i:
 					continue
 				if swap_cost_function(s,i,j)<0:
 					swap_by_indexes(s,i,j)
-		reps+=1
+		if np.array_equal(initial_s,s):
+			return s
 	return s
 
 def init_pheromones():
@@ -90,7 +91,7 @@ def evaporate_pheromone():
 def drop_pheromones(s):
 		global pheromones
 		cost=cost_function(s)
-		for i in range(len(s)-1):
+		for i in range(len(s)):
 			pheromones[i][s[i]]+=0.1/cost
 
 # ---------- INIT ----------
@@ -129,16 +130,16 @@ else:
 	else:
 		max_time=1.0
 
-#Max number of iteration without improving current best solution, and current counter
+#Max number of iteration without improving current best solution, current counter, and a boolean to reset ants
 diversification_trigger_max=int(size/2)
 diversification_trigger=0
-diversification_was_this_iteration=False
+diversification_happened_this_iteration=False
 
 #Generate N random permutations and apply a local search on them
 permutations=[local_search(permutation) for permutation in generate_permutations(N)]
 
-#All time best permutation and previous iteration's all time best
-all_time_best_permutation=deepcopy(min(permutations, key=cost_function))
+#Best solution found so far
+all_time_best_permutation=deepcopy(min(permutations,key=cost_function))
 
 #Solutions found by previous iteration (only for comparing as a whole, so keeping the sum is easier and faster)
 previous_solutions=np.inf
@@ -152,10 +153,7 @@ intensification=True
 #Initialze first ants
 ants=[]
 for permutation in permutations:
-	ants.append(ant(permutation,pheromones,cost_function,local_search, False, first=True))
-
-#Best solution found so far
-all_time_best_permutation=deepcopy(min(permutations,key=cost_function))
+	ants.append(ant(permutation,pheromones,cost_function,local_search, intensification, first=True))
 
 #What time has elapsed so far, used to make sure not to use too much time in main loop
 t_1=time.clock()
@@ -171,12 +169,9 @@ while time.clock()<max_time-t_1:
 	for _ant in ants:
 		_ant.join()
 
-	#Evaporate pheromones
-	evaporate_pheromone()
-
-	#Order every ant's solution to find the best one (according to its cost)
-	permutations=sorted([_ant.permutation for _ant in ants], key=cost_function)
-	iteration_best_permutation=deepcopy(permutations[0])
+	#Get every ant's solution and find the best one
+	permutations=[_ant.permutation for _ant in ants]
+	iteration_best_permutation=deepcopy(min(permutations,key=cost_function))
 
 	#Trigger intensification if best solution has been improved
 	if cost_function(all_time_best_permutation)>cost_function(iteration_best_permutation):
@@ -192,27 +187,30 @@ while time.clock()<max_time-t_1:
 		print('intensification OFF')
 		intensification=False
 
-	#Update all time best solutions
-	all_time_best_permutation=deepcopy(min([all_time_best_permutation,iteration_best_permutation], key=cost_function))
+	#Update previous solutions sum
+	previous_solutions=sum([cost_function(permutation) for permutation in permutations])
+
+	#Update all time best solution
+	all_time_best_permutation=deepcopy(min(all_time_best_permutation,iteration_best_permutation, key=cost_function))
+
+	#Evaporate pheromones
+	evaporate_pheromone()
 
 	#Drop pheromones on the current best solution
 	drop_pheromones(all_time_best_permutation)
 
-	#Trigger diversification mecanism
+	#Trigger diversification mecanism if needed
 	if diversification_trigger==diversification_trigger_max:
 		print('diversification')
 		reinitialize()
 
-	#Update previous solutions sum
-	previous_solutions=sum([cost_function(permutation) for permutation in permutations])
-
-	print(all_time_best_permutation,' - iteration best : ',cost_function(permutations[0]),' - all time best : ',cost_function(all_time_best_permutation))
+	print(all_time_best_permutation,' - iteration best : ',cost_function(iteration_best_permutation),' - all time best : ',cost_function(all_time_best_permutation))
 
 	#Re-initialize ants for next iteration
 	ants=[]
 	for permutation in permutations:
-		ants.append(ant(permutation,pheromones,cost_function,local_search, intensification, diversification_was_this_iteration))
+		ants.append(ant(permutation,pheromones,cost_function,local_search, intensification, diversification_happened_this_iteration))
 
-	diversification_was_this_iteration=False
+	diversification_happened_this_iteration=False
 
 print('\n==========\n\nTIME DONE : ',int(time.clock()+t_1),'s\nBEST SOLUTION FOUND : ',[i+1 for i in all_time_best_permutation],'\nCOST : ',cost_function(all_time_best_permutation),'\n\n==========')

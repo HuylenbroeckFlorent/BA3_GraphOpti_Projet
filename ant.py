@@ -17,7 +17,7 @@ class ant(Thread):
 		self.local_search=local_search
 		self.intensification=intensification
 
-		self.size=len(permutation)
+		self.size=len(self.permutation)
 		self.R=int(self.size/3)
 		self.q=0.9
 
@@ -28,7 +28,7 @@ class ant(Thread):
 	def run(self):
 		prev_permutation=deepcopy(self.permutation)
 		prev_cost=self.cost_function(self.permutation)
-		for i in range(self.R):
+		for _ in range(self.R):
 			self.pheromone_trail_swaps()
 			self.local_search(self.permutation)
 		if self.intensification and prev_cost<self.cost_function(self.permutation):
@@ -36,20 +36,21 @@ class ant(Thread):
 		return
 
 	def pheromone_trail_swaps(self):
-		s=np_random.choice(range(self.size))
-		probs=self.compute_probability(self.permutation[s])
+		r=np_random.choice(range(self.size))
+		probs=self.compute_probability(self.permutation[r])
 		if np_random.choice([True,False],p=[self.q,(1-self.q)]):
-			r=np.argmax(probs)
+			s=np.argmax(probs)
 		else:
-			r=np_random.choice(range(self.size),p=probs)
-		swap_by_indexes(self.permutation,s,r)
+			s=np_random.choice(range(self.size),p=probs)
+		swap_by_indexes(self.permutation,r,s)
 		return
 
-	def compute_probability(self,s):
+	def compute_probability(self,r):
 		probs=np.zeros(self.size)
 		for element in self.permutation:
-			if element==s:
+			if element==r:
 				continue
-			probs[element]=self.pheromones[s][self.permutation[element]]+self.pheromones[element][self.permutation[s]]
+			else:
+				probs[element]=self.pheromones[r][self.permutation[element]]+self.pheromones[element][self.permutation[r]]
 		probs/=sum(probs)
 		return probs

@@ -5,12 +5,30 @@
 # line skip
 # second matrix F(size*size)
 def read_QAP(path):
-	D=[]
-	F=[]
-	with open(path) as file:
+	with open(path,'r') as file:
 		content=file.readlines()
-	size=int(content[0])
-	for i in range(size):
-		D.append([int(elem_D) for elem_D in content[i+2].split()])
-		F.append([int(elem_F) for elem_F in content[i+size+3].split()])
-	return size,D,F
+		file.close()
+
+	wholefile=[]
+
+	for line in content:
+		wholefile.extend([nums for nums in line.split()])
+
+	size=int(wholefile.pop(0))
+
+	distances=[]
+	flows=[]
+
+	for _ in range(size):
+		row=[]
+		for __ in range(size):
+			row.append(int(wholefile.pop(0)))
+		distances.append(row)
+
+	for _ in range(size):
+		row=[]
+		for __ in range(size):
+			row.append(int(wholefile.pop(0)))
+		flows.append(row)
+
+	return size,distances,flows
