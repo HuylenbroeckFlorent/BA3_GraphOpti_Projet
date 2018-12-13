@@ -31,12 +31,7 @@ def init():
         for i in range(Taille):
             INIT.append(i)
         VoisinageG = voisins(INIT)
-        i = random.randint(0,Taille)
-        j = random.randint(0,Taille)
-        while(i==j):
-            i = random.randint(0,Taille)
-            j = random.randint(0,Taille)
-        INIT = VoisinageG[i][j]
+
 
 def Coute(s):
     c = 0
@@ -114,14 +109,15 @@ def glouton_proba(Alpha):
 
 def optimize(s,m):
     global Solution,CoutOpti
-    if Coute(s)<CoutOpti:
-        CoutOpti = Coute(s)
+    test = Coute(s)
+    if test<CoutOpti:
+        CoutOpti = test
         Solution = s
 
 if __name__ == '__main__':
     init()
-    while true:
+    while True:
         s = glouton_proba(0.5)
         s_ = recherche_locale(s)
-        optimize(s_,CoutOpti)
+        optimize(s_)
     print("%d  %d" Taille,CoutOpti)
