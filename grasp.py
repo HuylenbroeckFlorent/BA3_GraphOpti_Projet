@@ -16,30 +16,64 @@ INIT = []
 CoutOpti = inf
 
 def init():
-    file = input("Fichier à tester (sans le .dat): ")
-    with open("../instances/"+file+".dat",'r') as f:
+    test = input("Le fichier de donnée se trouve-t-il dans le dossier ../instances? [Y/N]")
+    file = ""
+    fileName = ""
+    if "y" in test or "Y" in test:
+        fileName = input("Fichier à tester (sans le .dat): ")
+        file = "../instances/"+fileName+".dat"
+    else:
+        file = input("Veuillez entrer le chemin absolu du fichier ")
+    with open(file,'r') as f:
         global Taille,D,F,VoisinageG,INIT
-        Taille = int(f.readline().split()[0])
+        Fich = f.read().split()
+        Taille = int(Fich[0])
         i = 0
-        f.readline()
-        for ligne in f.readlines():
+        j = 0
+        f=[]
+        d=[]
+        for e in Fich[1:]:
             if i<Taille:
-                if ligne[0]!='\n':
-                    D.append([int(i) for i in ligne.split()])
-                i+=1
+                if j<Taille:
+                    d.append(int(e))
+                    j+=1
+                else:
+                    D.append(d)
+                    d=[]
+                    d.append(int(e))
+                    i+=1
+                    j=1
+            elif Taille<i:
+                if j<Taille:
+                    f.append(int(e))
+                    j+=1
+                else:
+                    f.append(int(e))
+                    F.append(f)
+                    f=[]
+                    j=1
             else:
-                if ligne[0]!='\n':
-                    F.append([int(i) for i in ligne.split()])
+                f.append(d[0])
+                f.append(int(e))
+                d=[]
+                j=3
                 i+=1
         for i in range(Taille):
             INIT.append(i)
-    with open("../instances/"+file+".sln",'r') as f:
-        global CoutObjectif
-        CoutObjectif = int(f.readline().split()[1])
-        obj = f.readline().split()
-        for usine in obj:
-            Objectif.append(int(usine)-1)
-
+    test = input("Ce fichier a-t-il une solution? [Y/N]")
+    if "y" in test or "Y" in test:
+        test = input("A-t-il le même nom? [Y/N]")
+        path = ""
+        if "y" in test or "Y" in test:
+            path = "../instances/"+fileName+".sln"
+        else:
+            path = input("Veuillez entrer le chemin absolu du fichier :")
+        with open(path,'r') as f:
+            global CoutObjectif
+            obj = f.read().split()
+            CoutObjectif = int(obj[1])
+            for usine in obj[2:]:
+                Objectif.append(int(usine)-1)
 
 def Coute(s):
     c = 0
@@ -149,11 +183,20 @@ def optimize(s):
 if __name__ == '__main__':
     init()
     init_time = int(time.time())
-    print(init_time)
-    while (int(time.time())-init_time) < 60 and ((Solution!=Objectif) and (CoutOpti!=CoutObjectif)):
+    while (int(time.time())-init_time) < 60 and ((Solution!=Objectif) and (CoutOpti>CoutObjectif)):
         s = glouton_proba(0.5)
         s_ = recherche_locale(s)
         optimize(s_)
-    print(int(time.time()))
+    print("Temps Pris = ", end=" ")
+    print(int(time.time())-init_time,"s")
+    if CoutObjectif>0 and Objectif!=[]:
+        if CoutOpti>CoutObjectif :
+            print("Solution et cout total non optimaux")
+            print("Difference de ",CoutOpti-CoutObjectif," avec la solution optimale")
+        else:
+            print("Solution et cout total optimaux")
+    print("objectif=",CoutObjectif)
     print(Taille,CoutOpti)
+    for i in range(len(Solution)):
+        Solution[i]+=1
     print(Solution)
