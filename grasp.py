@@ -3,6 +3,7 @@ import copy
 from Voisinage import voisins
 import random
 import time
+from tabu_search import tabuSearch
 
 alphas = [0,10,20,30,40,50,60,70,80,90,100]
 Taille = 0
@@ -191,7 +192,8 @@ if __name__ == '__main__':
     if CoutObjectif>0 and Objectif!=[]:
         while (int(time.time())-init_time) < 60 and ((Solution!=Objectif) and (CoutOpti>CoutObjectif)):
             s = glouton_proba(0.8)
-            s_ = recherche_locale(s)
+            s_ = tabuSearch(F,D,s,10,15,1)
+            #s_ = recherche_locale(s)
             optimize(s_)
     else:
         while (int(time.time())-init_time) < 60:
