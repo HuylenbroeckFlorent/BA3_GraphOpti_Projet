@@ -2,6 +2,7 @@ from __future__ import division
 
 import sys
 import time 
+from util import read_QAP, swap_by_indexes
 
 from copy import deepcopy
 import numpy as np
