@@ -46,7 +46,7 @@ std::clock_t begin;
 /**
  	Max computation time
 */
-float max_computation_time=1.0;
+float max_computation_time=60.0;
 
 /**
 	Random related variables
@@ -139,18 +139,13 @@ std::vector<std::vector<float>> pheromones;
 */
 int previous_costs=std::numeric_limits<int>::max();
 
-/**
-	All the threads running the ants
-*/
-std::thread threads[N];
-
 
 int main(int argc, char** argv)
 {
 	//========== INIT ==========
 	begin = clock();
 
-	if(argc<1)
+	if(argc<2)
 	{
 		std::cout << "ant_colony must be fed at least one argument :\n- path : the relative or absolute path to the .dat file describing the QAP\n- (OPTIONAL) maxtime : max computation time (in seconds), default=60" << std::flush;
 		return 1;
@@ -158,8 +153,11 @@ int main(int argc, char** argv)
 
 	else
 	{
-		open_qap(argv[1],size,distances,flows);
 		if(argc>1)
+		{
+			open_qap(argv[1],size,distances,flows);
+		}
+		if(argc>2)
 		{
 			max_computation_time=(std::atoi(argv[2]));
 		}
@@ -183,17 +181,14 @@ int main(int argc, char** argv)
 	//========== MAIN LOOP ==========
 	while(total_time()<max_computation_time)
 	{
-		// Launch ants
-		for(int n=0; n<N; n++)
+		// Launch ants TODO threading
+		for(auto &permutation : permutations)
 		{	
-			ant(permutations[n]);
+			ant(permutation);
 		}
 
-		// De-activate first
-		if(first)
-		{
-			first=false;
-		}
+		// Update first to false
+		first=(first && false);
 
 		// Sort every ant's solution
 		sort(permutations.begin(), permutations.end(), compare_by_cost);
@@ -222,13 +217,15 @@ int main(int argc, char** argv)
 			intensification=false;
 		}
 
+		// Update best solution found so far
 		previous_costs=this_iteration_costs;
 		all_time_best_permutation=std::min(all_time_best_permutation,iteration_best_permutation,compare_by_cost);
 
+		// Update pheromones
 		evaporate_pheromones();
-
 		drop_pheromones(all_time_best_permutation);
 
+		// If S iteration have passed without improving the best solution, trigger diversification
 		if(S==S_max)
 		{
 			std::cout << "==== DIVERSIFICATION ===" << std::endl << std::flush;
@@ -285,6 +282,10 @@ void reinitialize()
 {
 	permutations=generate_permutation(N-1);
 	permutations.push_back(all_time_best_permutation);
+	for(auto &permutation : permutations)
+	{
+		local_search(permutation);
+	}
 	sort(permutations.begin(), permutations.end(), compare_by_cost);
 
 	init_pheromones();
@@ -452,7 +453,7 @@ void pheromone_trail_based_swap(std::vector<int> &permutation)
 	int r = choser(generator);
 	int s;
 	std::vector<float> probs = compute_probabilites(permutation, r);
-	if(zero_to_one(generator)>(1-q))
+	if(zero_to_one(generator)>q)
 	{
 		std::vector<int> all_s;
 		float max_prob=0;
