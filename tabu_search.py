@@ -3,7 +3,7 @@ import random
 import copy
 import sys
 sys.path.append('../util')
-from util import read_QAP,swap_by_indexes
+#from util import read_QAP,swap_by_indexes
 
 #For debug only
 def printMatrix(M):
