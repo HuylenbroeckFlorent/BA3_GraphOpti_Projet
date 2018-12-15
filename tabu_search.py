@@ -98,7 +98,7 @@ def tabuMovementSearch(F,D,initialPerm=-1,iterBeforeCheck=-1,tabuListSize=-1,num
                 ind=(ind+1)%tabuListSize
                 
             current=bn
-            print("Current: ",bnValue, "       Best: ",bestPerm,bestValue)
+            #print("Current: ",bnValue, "       Best: ",bestPerm,bestValue)
     #
     return bestPerm
 
@@ -131,10 +131,7 @@ def tabuPermSearch(F,D,initialPerm=-1,iterBeforeCheck=-1,tabuListSize=-1,numberO
             for i in range(len(neighborhood)):
                 neighborValue=permValue(neighborhood[i],F,D)
                 if(neighborValue<bnValue):
-                    if(neighborhood[i] in tabuList):
-                        if(neighborValue<bestValue):    #If best ever since, let's just ignore tabu
-                            bn,bnValue,directionTObn=neighborhood[i],neighborValue,directions[i]
-                    else:
+                    if(not (neighborhood[i] in tabuList)):
                         bn,bnValue,directionTObn=neighborhood[i],neighborValue,directions[i]
             if(bnValue<bestValue):
                 bestPerm,bestValue=bn,bnValue        
@@ -145,7 +142,7 @@ def tabuPermSearch(F,D,initialPerm=-1,iterBeforeCheck=-1,tabuListSize=-1,numberO
                 fifoIfNotIncluded(bn,tabuList,ind)
                 ind=(ind+1)%tabuListSize
             current=bn
-            print("Current: ",bnValue, "       Best: ",bestPerm,bestValue)
+            #print("Current: ",bnValue, "       Best: ",bestPerm,bestValue)
         if(tabuListSize!=-1):
             tabuListSize=max(4,tabuListSize//2) #the size of the tabuList never goes below 4
             tabuList=tabuList[(len(tabuList)-tabuListSize):]
@@ -174,9 +171,9 @@ size,D,F=read_QAP("nug30.dat")
 
 
 #perm=tabuSearch(F,D,[POINT DE DEPART DE LA FOURMI])
-perm=tabuSearch(F,D)                  #RELATIVLY QUICK, seems good for ants
-#perm=tabuSearch(F,D,-1,100,75,2,-1)     #LONGER (but better)
-#perm=tabuSearch(F,D,-1,10,15,1)      #VERY QUICK
+perm=tabuSearch(F,D)                    #RELATIVLY QUICK, seems good for ants
+#perm=tabuSearch(F,D,-1,100,75,2,-1)    #LONGER (but better)
+#perm=tabuSearch(F,D,-1,10,15,1)        #VERY QUICK
 
 
 print(perm)
