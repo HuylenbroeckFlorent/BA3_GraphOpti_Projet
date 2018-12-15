@@ -46,7 +46,7 @@ def getNeighborhood(perm):
     return neighborhood,directions
 
 #Return the objectif value of the specific perm.
-#/!\considering perm start counting at 1 (and not at 0): [2,0,1] is a valid perm, [3,1,2] isn't
+#/!\considering perm start counting at 0 (and not at 1): [2,0,1] is a valid perm, [3,1,2] isn't
 def permValue(perm,F,D):
     sum=0
     for i in range(len(perm)):
