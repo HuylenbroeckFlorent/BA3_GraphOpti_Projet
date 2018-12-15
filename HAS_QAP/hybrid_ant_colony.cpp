@@ -177,6 +177,8 @@ int main(int argc, char** argv)
 
 	init_pheromones();
 
+	std::cout << "==== INTENSIFICATION ON ====" << std::endl << std::flush;
+
 
 	//========== MAIN LOOP ==========
 	while(total_time()<max_computation_time)
@@ -200,7 +202,7 @@ int main(int argc, char** argv)
 			S=0;
 			if(!intensification)
 			{
-				std::cout << "==== INTENSIFICATION ON ===" << std::endl << std::flush;
+				std::cout << "==== INTENSIFICATION ON ====" << std::endl << std::flush;
 				intensification=true;
 			}
 		}
@@ -213,7 +215,7 @@ int main(int argc, char** argv)
 		int this_iteration_costs = total_cost();
 		if(intensification && this_iteration_costs==previous_costs)
 		{
-			std::cout << "==== INTENSIFICATION OFF ===" << std::endl << std::flush;
+			std::cout << "=== INTENSIFICATION OFF ====" << std::endl << std::flush;
 			intensification=false;
 		}
 
@@ -228,7 +230,7 @@ int main(int argc, char** argv)
 		// If S iteration have passed without improving the best solution, trigger diversification
 		if(S==S_max)
 		{
-			std::cout << "==== DIVERSIFICATION ===" << std::endl << std::flush;
+			std::cout << "===== DIVERSIFICATION ======" << std::endl << std::flush;
 			reinitialize();
 		}
 
@@ -237,8 +239,15 @@ int main(int argc, char** argv)
 		{
 			std::cout << i << " " << std::flush;
 		}
-		std::cout << "] at cost : " << cost_function(all_time_best_permutation) << " - this iteration best : " << cost_function(iteration_best_permutation) << std::endl << std::flush;
+		std::cout << "] at cost : " << cost_function(all_time_best_permutation) << " - iteration best : " << cost_function(iteration_best_permutation)<< std::endl << std::flush;
 	}
+
+	std::cout << std::endl << "=========== DONE ===========" << std::endl << std::endl << "Time elapsed : " << total_time() << "s" << std::endl << "Best solution found : [ " << std::flush;
+	for(auto i : all_time_best_permutation)
+	{
+		std::cout << i << " " << std::flush;
+	}
+	std::cout << "]" << std::endl << "Cost : " << cost_function(all_time_best_permutation) << std::endl << std::endl << "============================" << std::endl << std::flush;
 }
 
 /**
@@ -290,6 +299,10 @@ void reinitialize()
 
 	init_pheromones();
 
+	if(!intensification)
+	{
+		std::cout << "==== INTENSIFICATION ON ====" << std::endl << std::flush;
+	}
 	intensification=true;
 
 	S=0;
