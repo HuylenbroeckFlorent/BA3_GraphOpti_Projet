@@ -3,14 +3,14 @@ import random
 import copy
 import sys
 sys.path.append('../util')
-from util import read_QAP, swap_by_indexes
+from util import read_QAP,swap_by_indexes
 
 #For debug only
 def printMatrix(M):
     for i in range(len(M)):
         for j in range(len(M[i])):
             print(M[i][j], end=' ')
-        print("")    
+        print("")
 
 #For debug only
 def minusOneAll(p):
@@ -26,8 +26,8 @@ def swapij(tab,i,j):
 def appendIfNotIncluded(elem,tab):
     if not elem in tab:
         tab.append(elem)
-        
-#i beeing the indice of the next cell to be overwritten        
+
+#i beeing the indice of the next cell to be overwritten
 def fifoIfNotIncluded(elem,tab,i):
     if not elem in tab:
         tab[i]=elem
@@ -70,7 +70,7 @@ def tabuMovementSearch(F,D,initialPerm=-1,iterBeforeCheck=-1,tabuListSize=-1,num
         tabuList=a=[-1]*tabuListSize
     else:
         tabuList=[]       #The list of the tabu directions
-        
+
     current=initialPerm
     uppgraded=True
     while(uppgraded and numberOfPacks!=0):
@@ -89,14 +89,14 @@ def tabuMovementSearch(F,D,initialPerm=-1,iterBeforeCheck=-1,tabuListSize=-1,num
                     else:
                         bn,bnValue,directionTObn=neighborhood[i],neighborValue,directions[i]
             if(bnValue<bestValue):
-                bestPerm,bestValue=bn,bnValue        
+                bestPerm,bestValue=bn,bnValue
                 uppgraded=True
             if(tabuListSize==-1):
                 appendIfNotIncluded(directionTObn,tabuList)
             else:
                 fifoIfNotIncluded(directionTObn,tabuList,ind)
                 ind=(ind+1)%tabuListSize
-                
+
             current=bn
             #print("Current: ",bnValue, "       Best: ",bestPerm,bestValue)
     #
@@ -118,7 +118,7 @@ def tabuPermSearch(F,D,initialPerm=-1,iterBeforeCheck=-1,tabuListSize=-1,numberO
         tabuList=[-1]*tabuListSize
     else:
         tabuList=[]       #The list of the tabu directions
-        
+
     current=initialPerm
     uppgraded=True
     while(uppgraded and numberOfPacks!=0):
@@ -134,7 +134,7 @@ def tabuPermSearch(F,D,initialPerm=-1,iterBeforeCheck=-1,tabuListSize=-1,numberO
                     if(not (neighborhood[i] in tabuList)):
                         bn,bnValue,directionTObn=neighborhood[i],neighborValue,directions[i]
             if(bnValue<bestValue):
-                bestPerm,bestValue=bn,bnValue        
+                bestPerm,bestValue=bn,bnValue
                 uppgraded=True
             if(tabuListSize==-1):
                 appendIfNotIncluded(bn,tabuList)
@@ -164,17 +164,17 @@ def tabuSearch(F,D,initialPerm=-1,iterBeforeCheck=-1,tabuListSize=-2,movesPackSw
     bestPerm=tabuPermSearch(F,D,bestPerm,iterBeforeCheck,tabuListSize,tabuPermPacks)
     return bestPerm
 
-    
 
- 
-size,D,F=read_QAP("nug30.dat")     
+
+
+#size,D,F=read_QAP("nug30.dat")
 
 
 #perm=tabuSearch(F,D,[POINT DE DEPART DE LA FOURMI])
-perm=tabuSearch(F,D)                    #RELATIVLY QUICK, seems good for ants
+#perm=tabuSearch(F,D)                    #RELATIVLY QUICK, seems good for ants
 #perm=tabuSearch(F,D,-1,100,75,2,-1)    #LONGER (but better)
 #perm=tabuSearch(F,D,-1,10,15,1)        #VERY QUICK
 
 
-print(perm)
-print(permValue(perm,F,D))
+#print(perm)
+#print(permValue(perm,F,D))
