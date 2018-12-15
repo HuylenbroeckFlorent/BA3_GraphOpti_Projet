@@ -156,7 +156,7 @@ def tabuPermSearch(F,D,initialPerm=-1,iterBeforeCheck=-1,tabuListSize=-1,numberO
 #Launch a tabu search starting at the permutation "initialPerm". If initialPerm=-1, then start at a random permutation
 #Start with [movesPackSwitch] times [iterBeforeCheck] iterations with the movements as tabu
 #Then go on with [tabuPermPacks] times [iterBeforeCheck] iterations with the permutation as tabu, until we can't finda better solutoin (checked every [iterBeforeCheck] iterations)
-#If tabuPermPacks = -1, then there is no maximums number of iterations and we go on until we don't find a better permutation after [iterBeforeCheck] iterations
+#If tabuPermPacks = -1, then there is no maximums number of iterations in the tabu permutation search and we go on until we don't find a better permutation after [iterBeforeCheck] iterations
 #If tabuListSize = -1, then there is no limitation of the tabu list size.
 #The defaults value are for a not so long computation time, so it can be used for every ant in the ants algorithm
 def tabuSearch(F,D,initialPerm=-1,iterBeforeCheck=-1,tabuListSize=-2,movesPackSwitch=1,tabuPermPacks=2):
@@ -172,9 +172,10 @@ def tabuSearch(F,D,initialPerm=-1,iterBeforeCheck=-1,tabuListSize=-2,movesPackSw
  
 size,D,F=read_QAP("nug30.dat")     
 
+
 #perm=tabuSearch(F,D,[POINT DE DEPART DE LA FOURMI])
 perm=tabuSearch(F,D)                  #RELATIVLY QUICK, seems good for ants
-#perm=tabuSearch(F,D,-1,100,75,2)     #LONGER (but better)
+#perm=tabuSearch(F,D,-1,100,75,2,-1)     #LONGER (but better)
 #perm=tabuSearch(F,D,-1,10,15,1)      #VERY QUICK
 
 
