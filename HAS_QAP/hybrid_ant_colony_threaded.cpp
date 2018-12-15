@@ -11,6 +11,8 @@
 #include <random>
 #include <ctime>
 
+#include <functional>
+
 /**
 	Functions declarations, see function implementations for documentation
 */
@@ -23,7 +25,7 @@ void drop_pheromones(std::vector<int> s);
 int cost_function(std::vector<int> s);
 int swap_cost_function(std::vector<int> s, int i, int j);
 void local_search(std::vector<int> &permutation);
-void ant(std::vector<int> &permutation);
+void ant(int i);
 void pheromone_trail_based_swap(std::vector<int> &permutation);
 std::vector<float> compute_probabilites(std::vector<int> permutation, int r);
 void swap_by_indexes(std::vector<int> &v, int i, int j);
@@ -33,15 +35,9 @@ unsigned generate_seed();
 float total_time();
 
 /**
-	To delete when done implementing
-*/
-void print_vector(std::vector<int> v);
-void print_2_dim_vector(std::vector<std::vector<int>> v);
-
-/**
 	For time recording purpose
 */
-std::clock_t begin;
+std::chrono::high_resolution_clock::time_point begin = std::chrono::high_resolution_clock::now();
 
 /**
  	Max computation time
@@ -139,8 +135,10 @@ std::vector<std::vector<float>> pheromones;
 */
 int previous_costs=std::numeric_limits<int>::max();
 
-int n_iter =0;
-
+/**
+	Threads list
+*/
+std::vector<std::thread> threads;
 
 int main(int argc, char** argv)
 {
@@ -176,6 +174,8 @@ int main(int argc, char** argv)
 	S_max=(int)size/2.0;
 	R=(int)size/3.0;
 
+	threads = std::vector<std::thread>(N);
+
 	permutations=generate_permutation(N);
 
 	for(auto &permutation : permutations)
@@ -194,10 +194,16 @@ int main(int argc, char** argv)
 	//========== MAIN LOOP ==========
 	while(total_time()<max_computation_time)
 	{
-		// Launch ants TODO threading
-		for(auto &permutation : permutations)
+		// Launch ants threads
+		for(int i=0; i<N; i++)
 		{	
-			ant(permutation);
+			threads[i]=std::thread(ant, i);
+		}
+
+		// Wait for threads to end
+		for(int i=0; i<N; i++)
+		{
+			threads[i].join();
 		}
 
 		// Update first to false
@@ -251,7 +257,6 @@ int main(int argc, char** argv)
 			std::cout << i << " " << std::flush;
 		}
 		std::cout << "] at cost : " << cost_function(all_time_best_permutation) << " - iteration best : " << cost_function(iteration_best_permutation)<< std::endl << std::flush;
-		n_iter++;
 	}
 
 	std::cout << std::endl << "=========== DONE ===========" << std::endl << std::endl << "Time elapsed : " << total_time() << "s" << std::endl << "Best solution found : [ " << std::flush;
@@ -260,7 +265,6 @@ int main(int argc, char** argv)
 		std::cout << i << " " << std::flush;
 	}
 	std::cout << "]" << std::endl << "Cost : " << cost_function(all_time_best_permutation) << std::endl << std::endl << "============================" << std::endl << std::flush;
-	std::cout << n_iter << std::endl << std::flush;
 }
 
 /**
@@ -450,8 +454,9 @@ void local_search(std::vector<int> &s)
 /**
 	Ant
 */
-void ant(std::vector<int> &permutation)
+void ant(int i)
 {
+	std::vector<int> &permutation=permutations[i];
 	if(!first)
 	{
 		local_search(permutation);
@@ -582,28 +587,9 @@ unsigned generate_seed()
 */
 float total_time()
 {
-	std::clock_t now = std::clock();
+	std::chrono::high_resolution_clock::time_point now = std::chrono::high_resolution_clock::now();
 
-	float current_total_time = float(now-begin) / CLOCKS_PER_SEC;
+	std::chrono::duration<float, std::ratio<1>> current_total_time = now - begin;
 
-	return current_total_time;
-}
-
-
-void print_vector(std::vector<int> v)
-{
-	for(auto elem : v)
-	{
-		std::cout << elem << " " << std::flush;
-	}
-	std::cout << cost_function(v) << std::endl << std::flush;
-}
-
-void print_2_dim_vector(std::vector<std::vector<int>> v)
-{
-	for(auto vector : v)
-	{
-		print_vector(vector);
-	}
-	std::cout << std::endl << std::flush;
+	return current_total_time.count();
 }
