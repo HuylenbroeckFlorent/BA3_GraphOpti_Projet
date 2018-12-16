@@ -1,4 +1,9 @@
+/**
+	Compile with :
+ 		g++ hybrid_ant_colony_threaded.cpp -o hybrid_ant_colony_threaded -pthread -Ofast
+*/
 #include <iostream>
+#include <iomanip> // to fix float decimal while printing
 #include <fstream>
 #include <string>
 #include <vector>
@@ -7,11 +12,10 @@
 #include <algorithm> // shuffle, sort
 #include <chrono>
 #include <limits>
-#include <thread> // TODO
+#include <thread>
 #include <random>
-#include <ctime>
 
-#include <functional>
+
 
 /**
 	Functions declarations, see function implementations for documentation
@@ -43,6 +47,11 @@ std::chrono::high_resolution_clock::time_point begin = std::chrono::high_resolut
  	Max computation time
 */
 float max_computation_time=60.0;
+
+/**
+	Verbose mode
+*/ 
+bool verbose=false;
 
 /**
 	Random related variables
@@ -142,13 +151,17 @@ std::vector<std::thread> threads;
 
 int main(int argc, char** argv)
 {
-	std::cout << "==== INITIALIZING  ANTS ====" << std::endl << std::flush;
-	//========== INIT ==========
+	// std::cout always prints 4 digits
+	std::cout << std::setprecision(4) << std::fixed;
+
+	std::cout << std::endl << "==== INITIALIZING  ANTS ====" << std::endl << std::flush;
+	
+	// for timing purposes, saves the starting time
 	begin = std::chrono::high_resolution_clock::now();
 
 	if(argc<2)
 	{
-		std::cout << std::endl << "--- ERROR ---" << std::endl << "Ant_colony must be fed at least one argument :\n - path : the relative or absolute path to the .dat file describing the QAP\n - (OPTIONAL) maxtime : max computation time (in seconds), default=60" << std::endl << std::endl <<std::flush;
+		std::cout << std::endl << "--- ERROR ---" << std::endl << "Ant_colony must be fed at least one argument :\n - path : the relative or absolute path to the .dat file describing the QAP.\n - (OPTIONAL) maxtime : max computation time (in seconds), default=60.\n - (OPTIONAL) -v : verbose mode, default=false." << std::endl << std::endl <<std::flush;
 		std::cout << "=========== DONE ===========" << std::endl << std::flush;
 		return 1;
 	}
@@ -170,6 +183,11 @@ int main(int argc, char** argv)
 		{
 			max_computation_time=(std::atoi(argv[2]));
 		}
+		if(argc>3)
+		{
+			std::string verbose_arg = argv[3];
+			verbose=(verbose_arg=="-v");
+		}
 	}
 	S_max=(int)size/2.0;
 	R=(int)size/3.0;
@@ -188,10 +206,9 @@ int main(int argc, char** argv)
 
 	init_pheromones();
 
-	std::cout << "==== INTENSIFICATION ON ====" << std::endl << std::flush;
+	std::cout << "======= RUNNING ANTS =======" << std::endl << std::endl << std::flush;
 
-
-	//========== MAIN LOOP ==========
+	// Main loop
 	while(total_time()<max_computation_time)
 	{
 		// Launch ants threads
@@ -216,10 +233,21 @@ int main(int argc, char** argv)
 		//Trigger intensification if best solution has been improved
 		if(cost_function(all_time_best_permutation)>cost_function(iteration_best_permutation))
 		{
+			std::cout << " " << total_time() << "s - Found new solution " << std::flush;
+			if(verbose)
+			{
+				std::cout << "[ " << std::flush;
+				for(auto i : iteration_best_permutation)
+				{
+					std::cout << i << " " << std::flush;
+				}
+				std::cout << "] " << std::flush;
+			}
+			std::cout << "of cost : " << cost_function(iteration_best_permutation) << "." << std::endl << std::flush;
+
 			S=0;
 			if(!intensification)
 			{
-				std::cout << "==== INTENSIFICATION ON ====" << std::endl << std::flush;
 				intensification=true;
 			}
 		}
@@ -232,7 +260,6 @@ int main(int argc, char** argv)
 		int this_iteration_costs = total_cost();
 		if(intensification && this_iteration_costs==previous_costs)
 		{
-			std::cout << "=== INTENSIFICATION OFF ====" << std::endl << std::flush;
 			intensification=false;
 		}
 
@@ -247,16 +274,9 @@ int main(int argc, char** argv)
 		// If S iteration have passed without improving the best solution, trigger diversification
 		if(S==S_max)
 		{
-			std::cout << "===== DIVERSIFICATION ======" << std::endl << std::flush;
 			reinitialize();
 		}
 
-		std::cout << total_time() << "s - All time best permutation : [ " << std::flush;
-		for(auto i : all_time_best_permutation)
-		{
-			std::cout << i << " " << std::flush;
-		}
-		std::cout << "] at cost : " << cost_function(all_time_best_permutation) << " - iteration best : " << cost_function(iteration_best_permutation)<< std::endl << std::flush;
 	}
 
 	std::cout << std::endl << "=========== DONE ===========" << std::endl << std::endl << "Time elapsed : " << total_time() << "s" << std::endl << "Best solution found : [ " << std::flush;
@@ -316,10 +336,6 @@ void reinitialize()
 
 	init_pheromones();
 
-	if(!intensification)
-	{
-		std::cout << "==== INTENSIFICATION ON ====" << std::endl << std::flush;
-	}
 	intensification=true;
 
 	S=0;
