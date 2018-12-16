@@ -1,0 +1,4 @@
+\babel@toc {french}{}
+\beamer@sectionintoc {1}{M\IeC {\'e}thodes D\IeC {\'e}battues}{3}{0}{1}
+\beamer@subsectionintoc {1}{1}{Recherche Taboue}{4}{0}{1}
+\beamer@subsectionintoc {1}{2}{Colonie de Fourmis}{5}{0}{1}
