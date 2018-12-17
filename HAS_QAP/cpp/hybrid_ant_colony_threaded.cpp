@@ -199,7 +199,7 @@ int main(int argc, char** argv)
 
 	for(auto &permutation : permutations)
 	{
-		HAS_local_search_procedure(permutation);
+		HAS_tabu_search_procedure(permutation);
 	}
 	sort(permutations.begin(), permutations.end(), compare_by_cost);
 
@@ -328,7 +328,7 @@ void reinitialize()
 	permutations.push_back(all_time_best_permutation);
 	for(auto &permutation : permutations)
 	{
-		HAS_local_search_procedure(permutation);
+		HAS_tabu_search_procedure(permutation);
 	}
 	sort(permutations.begin(), permutations.end(), compare_by_cost);
 
