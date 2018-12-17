@@ -15,7 +15,7 @@
 #include <thread>
 #include <random>
 
-
+#include <tuple>
 
 /**
 	Functions declarations, see function implementations for documentation
@@ -28,7 +28,8 @@ void evaporate_pheromones();
 void drop_pheromones(std::vector<int> s);
 int cost_function(std::vector<int> s);
 int swap_cost_function(std::vector<int> s, int i, int j);
-void local_search(std::vector<int> &permutation);
+void HAS_local_search_procedure(std::vector<int> &s);
+void HAS_tabu_search_procedure(std::vector<int> &s);
 void ant(int i);
 void pheromone_trail_based_swap(std::vector<int> &permutation);
 std::vector<float> compute_probabilites(std::vector<int> permutation, int r);
@@ -198,7 +199,7 @@ int main(int argc, char** argv)
 
 	for(auto &permutation : permutations)
 	{
-		local_search(permutation);
+		HAS_local_search_procedure(permutation);
 	}
 	sort(permutations.begin(), permutations.end(), compare_by_cost);
 
@@ -222,9 +223,6 @@ int main(int argc, char** argv)
 		{
 			threads[i].join();
 		}
-
-		// Update first to false
-		first=(first && false);
 
 		// Sort every ant's solution
 		sort(permutations.begin(), permutations.end(), compare_by_cost);
@@ -330,7 +328,7 @@ void reinitialize()
 	permutations.push_back(all_time_best_permutation);
 	for(auto &permutation : permutations)
 	{
-		local_search(permutation);
+		HAS_local_search_procedure(permutation);
 	}
 	sort(permutations.begin(), permutations.end(), compare_by_cost);
 
@@ -339,8 +337,6 @@ void reinitialize()
 	intensification=true;
 
 	S=0;
-
-	first=true;
 }
 
 /**
@@ -439,7 +435,7 @@ int swap_cost_function(std::vector<int> s, int i, int j)
 /**
 	Applies the local search algorithm to a solution s
 */
-void local_search(std::vector<int> &s)
+void HAS_local_search_procedure(std::vector<int> &s)
 {
 	std::vector<int> initial_s = s;
 
@@ -468,22 +464,74 @@ void local_search(std::vector<int> &s)
 }
 
 /**
+	Applies tabu search algorithm to a solution s
+*/
+void HAS_tabu_search_procedure(std::vector<int> &s)
+{
+	int fifo_max_size = int(size/2+(zero_to_one(generator)*size));
+	std::vector<std::tuple<int,int>> fifo(fifo_max_size);
+
+	std::vector<int> best_permutation_yet=s;
+	int best_cost_yet=cost_function(best_permutation_yet);
+
+	int fifo_index=0;
+
+	for(int k=0; k<5*size; k++)
+	{
+		std::tuple<int,int> best_neighbor=std::make_tuple(0,0);
+		int best_neighbor_cost_shift=std::numeric_limits<int>::max();
+
+		for(auto i : (std::vector<int>) generate_permutation(1)[0])
+		{
+			for(auto j : (std::vector<int>) generate_permutation(1)[0])
+			{
+				if(i==j)
+				{
+					continue;
+				}
+
+				else if(std::find(fifo.begin(), fifo.end(), std::make_tuple(i,j)) != fifo.end() || std::find(fifo.begin(), fifo.end(), std::make_tuple(j,i)) != fifo.end())
+				{
+					if(cost_function(s)+swap_cost_function(s,i,j)<best_cost_yet)
+					{
+						best_neighbor=std::make_tuple(i,j);
+						best_neighbor_cost_shift=swap_cost_function(s,i,j);
+						best_cost_yet=cost_function(s)+swap_cost_function(s,i,j);
+					}
+					continue;
+				}
+				else if(swap_cost_function(s,i,j)<best_neighbor_cost_shift)
+				{
+					best_neighbor=std::make_tuple(i,j);
+					best_neighbor_cost_shift=0+swap_cost_function(s,i,j);
+				}
+			}
+		}
+		swap_by_indexes(s,std::get<0>(best_neighbor),std::get<1>(best_neighbor));
+
+		if(std::find(fifo.begin(), fifo.end(), std::make_tuple(std::get<0>(best_neighbor),std::get<1>(best_neighbor))) == fifo.end() && std::find(fifo.begin(), fifo.end(), std::make_tuple(std::get<1>(best_neighbor),std::get<0>(best_neighbor))) == fifo.end())
+		{
+			fifo[fifo_index]=best_neighbor;
+			fifo_index=(fifo_index+1)%fifo_max_size;
+		}
+		best_permutation_yet=std::min(best_permutation_yet,s,compare_by_cost);
+		best_cost_yet=cost_function(best_permutation_yet);
+	}
+}
+
+/**
 	Ant
 */
 void ant(int i)
 {
 	std::vector<int> &permutation=permutations[i];
-	if(!first)
-	{
-		local_search(permutation);
-	}
 	std::vector<int> prev_permutation = permutation;
 	int prev_cost=cost_function(prev_permutation);
 
 	for(int reps=0; reps<R; reps++)
 	{
 		pheromone_trail_based_swap(permutation);
-		local_search(permutation);
+		HAS_local_search_procedure(permutation);
 	}
 	if(intensification and prev_cost<cost_function(permutation))
 	{
