@@ -14,7 +14,6 @@
 #include <limits>
 #include <thread>
 #include <random>
-
 #include <tuple>
 
 /**
@@ -155,7 +154,7 @@ int main(int argc, char** argv)
 	// std::cout always prints 4 digits
 	std::cout << std::setprecision(4) << std::fixed;
 
-	std::cout << std::endl << "==== INITIALIZING  ANTS ====" << std::endl << std::flush;
+	std::cout << std::endl << "==== INITIALIZING  ANTS ====" << std::endl << std::endl << std::flush;
 	
 	// for timing purposes, saves the starting time
 	begin = std::chrono::high_resolution_clock::now();
@@ -205,9 +204,22 @@ int main(int argc, char** argv)
 
 	all_time_best_permutation=permutations[0];
 
+	std::cout << " " << total_time() << "s - Found initial solution " << std::flush;
+	if(verbose)
+	{
+		std::cout << "[ " << std::flush;
+		for(auto i : all_time_best_permutation)
+		{
+			std::cout << i << " " << std::flush;
+		}
+		std::cout << "] " << std::flush;
+	}
+	std::cout << "of cost : " << cost_function(all_time_best_permutation) << "." << std::endl << std::flush;
+
+
 	init_pheromones();
 
-	std::cout << "======= RUNNING ANTS =======" << std::endl << std::endl << std::flush;
+	std::cout << std::endl << "======= RUNNING ANTS =======" << std::endl << std::endl << std::flush;
 
 	// Main loop
 	while(total_time()<max_computation_time)
@@ -331,6 +343,22 @@ void reinitialize()
 		HAS_tabu_search_procedure(permutation);
 	}
 	sort(permutations.begin(), permutations.end(), compare_by_cost);
+
+	if(cost_function(all_time_best_permutation)>cost_function(permutations[0]))
+	{
+		all_time_best_permutation=permutations[0];
+		std::cout << " " << total_time() << "s - Found new solution " << std::flush;
+		if(verbose)
+		{
+			std::cout << "[ " << std::flush;
+			for(auto i : all_time_best_permutation)
+			{
+				std::cout << i << " " << std::flush;
+			}
+			std::cout << "] " << std::flush;
+		}
+		std::cout << "of cost : " << cost_function(all_time_best_permutation) << " during diversification." << std::endl << std::flush;
+	}
 
 	init_pheromones();
 
