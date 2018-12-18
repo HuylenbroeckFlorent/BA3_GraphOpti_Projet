@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2019/dev/Debian) (preloaded format=pdflatex 2018.10.24)  16 DEC 2018 16:46
+This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2019/dev/Debian) (preloaded format=pdflatex 2018.10.24)  18 DEC 2018 20:33
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -910,6 +910,20 @@ Overfull \hbox (2.09709pt too wide) has occurred while \output is active
 [5
 
 ]
+Overfull \hbox (2.09709pt too wide) has occurred while \output is active
+ [][]  
+ []
+
+[6
+
+]
+Overfull \hbox (2.09709pt too wide) has occurred while \output is active
+ [][]  
+ []
+
+[7
+
+]
 \tf@nav=\write6
 \openout6 = `Rapport.nav'.
 
@@ -919,29 +933,29 @@ Overfull \hbox (2.09709pt too wide) has occurred while \output is active
 \tf@snm=\write8
 \openout8 = `Rapport.snm'.
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 53.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 53.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 101.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 101.
  (./Rapport.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 53.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 53.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 101.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 101.
 Package rerunfilecheck Info: File `Rapport.out' has not changed.
-(rerunfilecheck)             Checksum: 83A8D628F81762359A1AFDBDAF3FA0CD;191.
+(rerunfilecheck)             Checksum: 35738BA77C38CFDFB6A2E581013C5EE6;311.
  ) 
 Here is how much of TeX's memory you used:
- 18116 strings out of 493980
- 341576 string characters out of 6160421
- 429600 words of memory out of 5000000
- 21398 multiletter control sequences out of 15000+600000
- 5452 words of font info for 20 fonts, out of 8000000 for 9000
+ 18164 strings out of 493980
+ 342703 string characters out of 6160421
+ 432600 words of memory out of 5000000
+ 21440 multiletter control sequences out of 15000+600000
+ 5757 words of font info for 21 fonts, out of 8000000 for 9000
  350 hyphenation exceptions out of 8191
  48i,20n,65p,774b,745s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmss10.pfb></us
 r/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmss12.pfb></usr/shar
 e/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmss8.pfb>
-Output written on Rapport.pdf (5 pages, 50021 bytes).
+Output written on Rapport.pdf (7 pages, 57536 bytes).
 PDF statistics:
- 229 PDF objects out of 1000 (max. 8388607)
- 191 compressed objects within 2 object streams
- 14 named destinations out of 1000 (max. 500000)
- 175 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 315 PDF objects out of 1000 (max. 8388607)
+ 271 compressed objects within 3 object streams
+ 20 named destinations out of 1000 (max. 500000)
+ 203 words of extra memory for PDF output out of 10000 (max. 10000000)
 

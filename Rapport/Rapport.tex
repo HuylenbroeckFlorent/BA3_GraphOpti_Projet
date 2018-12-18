@@ -20,7 +20,9 @@
 	\frametitle{Table des Matières}
 	\tableofcontents
 \end{frame}
+
 \section{Méthodes Débattues}
+
 \begin{frame}
 	
 	3 méthodes débattues:
@@ -34,20 +36,66 @@
 			\item Recherche Taboue
 			\item Colonie de Fourmis
 		\end{itemize}
+	1 Implémentée:
+		\begin{itemize}
+			\item Colonie de Fourmis Hybride
+		\end{itemize}
+\end{frame}
+
+\subsection{GRASP}
+
+\begin{frame}
+
+\begin{itemize}
+	\item Idée Générale
+	\begin{enumerate}
+		\item Glouton avec Proba
+		\item Recherche locale 
+	\end{enumerate}
+	\item Pourquoi? 
+	\begin{enumerate}
+		\item Point de départ pour autres algos
+		\item Abandonné après début colonie de fourmis hybride
+	\end{enumerate}
+\end{itemize}
+
 \end{frame}
 
 \subsection{Recherche Taboue}
+
 \begin{frame}
+
 	\begin{itemize}
-		\item Idée Générale
-		\item Pourquoi?
+		\item Idée Générale\\
+		\begin{enumerate}
+			\item Recherche locale avec liste d'objets parcourus 
+		\end{enumerate}
+		\item Pourquoi?\\
+		\begin{enumerate}
+			\item Trouver une permutation de départ efficace
+		\end{enumerate}
+	\end{itemize}
+
+\end{frame}
+
+\subsection{Colonie de Fourmis}
+
+\begin{frame}
+
+	\begin{itemize}
+		\item Idée Générale\\
+		\begin{enumerate}
+			\item Envoyer des fourmis
+			\item Phéromones\\
+			\item Diversification et Intensification\\ 
+		\end{enumerate}
+%			
+		\item Pourquoi?\\
 	\end{itemize}
 \end{frame}
-\subsection{Colonie de Fourmis}
+
+\section{Méthode impléméntée}
 \begin{frame}
-	\begin{itemize}
-		\item Idée Générale
-		\item Pourquoi?
-	\end{itemize}
+	L'implémentation finale consiste en une hybridation de l'algorithme de la colonie de fourmis avec l'algorithme de la recherche taboue et, lorsque la taille est trop grande, d'une recherche locale.
 \end{frame}
 \end{document}
