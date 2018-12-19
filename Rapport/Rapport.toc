@@ -4,3 +4,4 @@
 \beamer@subsectionintoc {1}{2}{Recherche Taboue}{5}{0}{1}
 \beamer@subsectionintoc {1}{3}{Colonie de Fourmis}{6}{0}{1}
 \beamer@sectionintoc {2}{M\IeC {\'e}thode impl\IeC {\'e}m\IeC {\'e}nt\IeC {\'e}e}{7}{0}{2}
+\beamer@subsectionintoc {2}{1}{\emph {Hybrid Ant Search}}{8}{0}{2}
