@@ -72,7 +72,7 @@ const int Q=100;
 /**
 	Parameter for ant swap decision	
 */
-const float q=0.9;
+const float q=0.5;
 
 /**
 	Parameter for pheromones decaying
@@ -133,6 +133,11 @@ std::vector<std::vector<int>> permutations;
 	Current best solution found
 */
 std::vector<int> all_time_best_permutation;
+
+/**
+	Current best solution found since diversification
+*/
+std::vector<int> this_era_best_permutation;
 
 /**
  	Pheromones matrix
@@ -203,6 +208,7 @@ int main(int argc, char** argv)
 	sort(permutations.begin(), permutations.end(), compare_by_cost);
 
 	all_time_best_permutation=permutations[0];
+	this_era_best_permutation=all_time_best_permutation;
 
 	std::cout << " " << total_time() << "s - Found initial solution " << std::flush;
 	if(verbose)
@@ -214,7 +220,7 @@ int main(int argc, char** argv)
 		}
 		std::cout << "] " << std::flush;
 	}
-	std::cout << "of cost " << cost_function(all_time_best_permutation) << "." << std::endl << std::flush;
+	std::cout << "of cost : " << cost_function(all_time_best_permutation) << "." << std::endl << std::flush;
 
 
 	init_pheromones();
@@ -241,21 +247,8 @@ int main(int argc, char** argv)
 		std::vector<int> iteration_best_permutation = permutations[0];
 
 		//Trigger intensification if best solution has been improved
-		if(cost_function(all_time_best_permutation)>cost_function(iteration_best_permutation))
+		if(cost_function(this_era_best_permutation)>cost_function(iteration_best_permutation))
 		{
-			std::cout << " " << total_time() << "s - Found new solution " << std::flush;
-			if(verbose)
-			{
-				std::cout << "[ " << std::flush;
-				for(auto i : iteration_best_permutation)
-				{
-					std::cout << i << " " << std::flush;
-				}
-				std::cout << "] " << std::flush;
-			}
-			std::cout << "of cost " << cost_function(iteration_best_permutation) << "." << std::endl << std::flush;
-
-			S=0;
 			if(!intensification)
 			{
 				intensification=true;
@@ -273,13 +266,31 @@ int main(int argc, char** argv)
 			intensification=false;
 		}
 
-		// Update best solution found so far
+		// Update costs, best era solution and all time best solution
 		previous_costs=this_iteration_costs;
-		all_time_best_permutation=std::min(all_time_best_permutation,iteration_best_permutation,compare_by_cost);
+		this_era_best_permutation=std::min(this_era_best_permutation,iteration_best_permutation,compare_by_cost);
+		if(cost_function(this_era_best_permutation)<cost_function(all_time_best_permutation))
+		{
+			std::cout << " " << total_time() << "s - Found new solution " << std::flush;
+			if(verbose)
+			{
+				std::cout << "[ " << std::flush;
+				for(auto i : iteration_best_permutation)
+				{
+					std::cout << i << " " << std::flush;
+				}
+				std::cout << "] " << std::flush;
+			}
+			std::cout << "of cost : " << cost_function(iteration_best_permutation) << "." << std::endl << std::flush;
 
+			all_time_best_permutation=this_era_best_permutation;
+		}
+		
 		// Update pheromones
 		evaporate_pheromones();
 		drop_pheromones(all_time_best_permutation);
+		evaporate_pheromones();
+		drop_pheromones(this_era_best_permutation);
 
 		// If S iteration have passed without improving the best solution, trigger diversification
 		if(S==S_max)
@@ -337,12 +348,17 @@ void open_qap(std::string path, int &size, std::vector<std::vector<int>> &distan
 void reinitialize()
 {
 	permutations=generate_permutation(N-1);
-	permutations.push_back(all_time_best_permutation);
+	permutations.push_back(this_era_best_permutation);
 	for(auto &permutation : permutations)
 	{
 		HAS_tabu_search_procedure(permutation);
 	}
 	sort(permutations.begin(), permutations.end(), compare_by_cost);
+
+	if(cost_function(this_era_best_permutation)>cost_function(permutations[0]))
+	{
+		this_era_best_permutation=permutations[0];
+	}
 
 	if(cost_function(all_time_best_permutation)>cost_function(permutations[0]))
 	{
@@ -357,7 +373,7 @@ void reinitialize()
 			}
 			std::cout << "] " << std::flush;
 		}
-		std::cout << "of cost " << cost_function(all_time_best_permutation) << " during diversification." << std::endl << std::flush;
+		std::cout << "of cost : " << cost_function(all_time_best_permutation) << " during diversification." << std::endl << std::flush;
 	}
 
 	init_pheromones();
