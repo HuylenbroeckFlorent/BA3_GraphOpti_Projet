@@ -42,25 +42,6 @@
 		\end{itemize}
 \end{frame}
 
-\subsection{GRASP}
-
-\begin{frame}
-
-\begin{itemize}
-	\item Idée Générale
-	\begin{enumerate}
-		\item Glouton avec Proba
-		\item Recherche locale 
-	\end{enumerate}
-	\item Pourquoi? 
-	\begin{enumerate}
-		\item Point de départ pour autres algos
-		\item Abandonné après début colonie de fourmis hybride
-	\end{enumerate}
-\end{itemize}
-
-\end{frame}
-
 \subsection{Recherche Tabou}
 \begin{frame}
 	\begin{itemize}
@@ -104,12 +85,12 @@ Une phase plus rare de diversification vient parfois s'ajouter.
 \begin{frame}
 Lors d'une itération, une fourmi $k$ applique à sa solution $s^k$ :
 \begin{itemize}
-	\item Un certain nombre ($N/3$) de permutations basées sur la matrice des phéromones $\rightarrow s^{'k}$.
+	\item Un certain nombre de permutations basées sur la matrice des phéromones $\rightarrow s^{'k}$.
 	\item Une recherche locale $\rightarrow s^{''k}$.
 	\item Si intensification : $s^{''k}\leftarrow$max($s^k$,$s^{''k}$)
 \end{itemize}
 Ensuite, après évaporation des phéromones (par un facteur $\alpha=0.9$) seule la meilleure fourmi dépose les siennes, ce qui rend la recherche assez intense.\\
-Pour contrer cela, si un certain nombre d'itérations ($N/2$) se sont déroulées sans améliorer la meilleure solution $s^*$, une remise à zéro des solutions tenues par les fourmis est effectuée, en ne gardant que la meilleure solution $s^*$ dans une fourmi. Une recherche tabou est ensuite effectuée à la place d'une recherche locale pour la première nouvelle itération.\\[.5cm]
+Pour contrer cela, si un certain nombre d'itérations se sont déroulées sans améliorer la meilleure solution $s^*$, une remise à zéro des solutions tenues par les fourmis est effectuée, en ne gardant que la meilleure solution $s^*$ dans une fourmi. Une recherche tabou est ensuite effectuée à la place d'une recherche locale pour la première nouvelle itération.\\[.5cm]
 Le nombre de fourmis est fixé à $10$.
 \end{frame}
 

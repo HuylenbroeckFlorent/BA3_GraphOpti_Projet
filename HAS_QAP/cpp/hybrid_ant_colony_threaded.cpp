@@ -612,6 +612,9 @@ void pheromone_trail_based_swap(std::vector<int> &permutation)
 	swap_by_indexes(permutation,r,s);
 }
 
+/**
+	Compute the probability to swap r with another j in permutation, based on pheromones trail
+*/
 std::vector<float> compute_probabilites(std::vector<int> permutation, int r)
 {
 	std::vector<float> probs(size);
