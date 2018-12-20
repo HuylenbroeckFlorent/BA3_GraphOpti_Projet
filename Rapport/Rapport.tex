@@ -62,21 +62,19 @@
 \end{frame}
 
 \subsection{Recherche Tabou}
-
 \begin{frame}
-
 	\begin{itemize}
 		\item Idée Générale\\
 		\begin{enumerate}
-			\item Recherche locale avec liste d'objets parcourus 
+			\item Voisinage = toute permutation de 2 éléments non 2 à 2 (Ex: [1,2,3]$\rightarrow$[3,2,1])
+			\item Deux types : Mouvement et Solution
+			\item Longueur de la liste Tabou : n (+x) mais décroisant
+			\item N itérations en Mouvement ensuite, jusqu'à plus d'améliorations
 		\end{enumerate}
-		\item Pourquoi?\\
-		\begin{enumerate}
-			\item Trouver une permutation de départ efficace
-		\end{enumerate}
+		\item Gardée pour l'implémentation finale du projet (Voir slide 7)
 	\end{itemize}
-
 \end{frame}
+
 
 \section{Méthode impléméntée}
 \subsection{Fourmis pour les QAPs}
