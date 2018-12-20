@@ -1,7 +1,9 @@
 \babel@toc {french}{}
 \beamer@sectionintoc {1}{M\IeC {\'e}thodes D\IeC {\'e}battues}{3}{0}{1}
 \beamer@subsectionintoc {1}{1}{GRASP}{4}{0}{1}
-\beamer@subsectionintoc {1}{2}{Recherche Taboue}{5}{0}{1}
-\beamer@subsectionintoc {1}{3}{Colonie de Fourmis}{6}{0}{1}
-\beamer@sectionintoc {2}{M\IeC {\'e}thode impl\IeC {\'e}m\IeC {\'e}nt\IeC {\'e}e}{7}{0}{2}
-\beamer@subsectionintoc {2}{1}{\emph {Hybrid Ant Search}}{8}{0}{2}
+\beamer@subsectionintoc {1}{2}{Recherche Tabou}{5}{0}{1}
+\beamer@sectionintoc {2}{M\IeC {\'e}thode impl\IeC {\'e}m\IeC {\'e}nt\IeC {\'e}e}{6}{0}{2}
+\beamer@subsectionintoc {2}{1}{Fourmis pour les QAPs}{6}{0}{2}
+\beamer@subsectionintoc {2}{2}{La colonie de fourmi hybride}{7}{0}{2}
+\beamer@subsectionintoc {2}{3}{Fonctionnement}{8}{0}{2}
+\beamer@subsectionintoc {2}{4}{Impl\IeC {\'e}mentation}{9}{0}{2}
