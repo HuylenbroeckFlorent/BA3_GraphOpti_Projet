@@ -28,17 +28,17 @@
 	3 méthodes débattues:
 	\begin{itemize}
 		\item GRASP
-		\item Recherche Taboue
-		\item Colonie de Fourmis
+		\item Recherche Tabou
+		\item Colonie de fourmis
 	\end{itemize}
-	2 Choisies :
+	2 Choisies:
 		\begin{itemize}
-			\item Recherche Taboue
-			\item Colonie de Fourmis
+			\item Recherche Tabou
+			\item Colonie de fourmis
 		\end{itemize}
 	1 Implémentée:
 		\begin{itemize}
-			\item Colonie de Fourmis Hybride
+			\item Colonie de fourmis hybride
 		\end{itemize}
 \end{frame}
 
@@ -61,41 +61,67 @@
 
 \end{frame}
 
-\subsection{Recherche Taboue}
-
+\subsection{Recherche Tabou}
 \begin{frame}
-
 	\begin{itemize}
 		\item Idée Générale\\
 		\begin{enumerate}
-			\item Recherche locale avec liste d'objets parcourus 
+			\item Voisinage = toute permutation de 2 éléments.\\
+			(Ex: Pour [1,2,3] le voisinage serait : [[2,1,3],[3,2,1],[1,3,2]])
+			\item Deux types de recherche tabou: par mouvement et par solution
+			\item Longueur de la liste Tabou : n (+x) mais décroisant
+			\item La recherche effectue $N$ itérations en mouvement, ensuite, on effectue une recherche par solution jusqu'à ce que l'on n'améliore plus notre solution.
 		\end{enumerate}
-		\item Pourquoi?\\
-		\begin{enumerate}
-			\item Trouver une permutation de départ efficace
-		\end{enumerate}
-	\end{itemize}
-
-\end{frame}
-
-\subsection{Colonie de Fourmis}
-
-\begin{frame}
-
-	\begin{itemize}
-		\item Idée Générale\\
-		\begin{enumerate}
-			\item Envoyer des fourmis
-			\item Phéromones\\
-			\item Diversification et Intensification\\ 
-		\end{enumerate}
-%			
-		\item Pourquoi?\\
+		\item Gardée pour l'implémentation finale du projet (Voir slide 7)
 	\end{itemize}
 \end{frame}
+
 
 \section{Méthode impléméntée}
+\subsection{Fourmis pour les QAPs}
 \begin{frame}
-	L'implémentation finale consiste en une hybridation de l'algorithme de la colonie de fourmis avec l'algorithme de la recherche taboue et, lorsque la taille est trop grande, d'une recherche locale.
+
+Afin d'appliquer la colonie de fourmis aux problèmes d'affectation quadratiques, il faut voir la matrice des phéromones non plus comme "La probabilité de passer de $i$ à $j$" mais plutôt "La désirabilité que $s_i=j$ dans notre solution $s$ ". \\
+Les fourmis ne construisent plus une solution à partir d'un point de départ, mais explorent le voisinage d'une solution de départ.\\
+\end{frame}
+
+\subsection{La colonie de fourmi hybride}
+\begin{frame}
+L'hybridation apportée à cette colonie de fourmi consiste en deux points :\\
+	\begin{itemize}
+	\item Les solutions initiales sont affinées par une recherche locale (\emph{fast-start}) ou par une recherche tabou (\emph{slow-start})\\
+	\item Chaque fourmi, lors d'une itération, applique elle-même une recherche locale à sa solution modifiée.\\
+	\end{itemize}
+Et fonctionne selon deux modes :
+	\begin{itemize}
+	\item Une phase d'intensification : les fourmis gardent toujours la meilleure de leurs solutions.
+	\item Une phase hors intensification : les fourmis gardent toujours la solution générée par leurs permutations.\\[.5cm]
+	\end{itemize}
+Une phase plus rare de diversification vient parfois s'ajouter.
+\end{frame}
+
+\subsection{Fonctionnement}
+\begin{frame}
+Lors d'une itération, une fourmi $k$ applique à sa solution $s^k$ :
+\begin{itemize}
+	\item Un certain nombre ($N/3$) de permutations basées sur la matrice des phéromones $\rightarrow s^{'k}$.
+	\item Une recherche locale $\rightarrow s^{''k}$.
+	\item Si intensification : $s^{''k}\leftarrow$max($s^k$,$s^{''k}$)
+\end{itemize}
+Ensuite, après évaporation des phéromones (par un facteur $\alpha=0.9$) seule la meilleure fourmi dépose les siennes, ce qui rend la recherche assez intense.\\
+Pour contrer cela, si un certain nombre d'itérations ($N/2$) se sont déroulées sans améliorer la meilleure solution $s^*$, une remise à zéro des solutions tenues par les fourmis est effectuée, en ne gardant que la meilleure solution $s^*$ dans une fourmi. Une recherche tabou est ensuite effectuée à la place d'une recherche locale pour la première nouvelle itération.\\[.5cm]
+Le nombre de fourmis est fixé à $10$.
+\end{frame}
+
+\subsection{Implémentation}
+\begin{frame}
+En ce qui concerne l'implémentation, les fourmis nous semblaient avantageuses pour une raison, la possibilité de lancer chaque fourmi dans un thread. Les étapes lors de l'implémentation ont été :
+\begin{itemize}
+	\item Premier jet en python3 (Colonie de fourmi + recherche locale).
+	\item Traduction en $C$++.
+	\item Ajout du \emph{multi-threading}.
+	\item Ajout de la recherche tabou lors de l'initialisation.
+\end{itemize}
+Chaque étape ayant mené à une amélioration de la vitesse ou de la qualité de la solution trouvée.
 \end{frame}
 \end{document}
