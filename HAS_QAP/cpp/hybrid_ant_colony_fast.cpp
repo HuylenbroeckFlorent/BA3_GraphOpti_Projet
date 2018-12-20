@@ -1,15 +1,25 @@
 /**
+	First algorithm.
+
+	Fastest of all three version, but really fast convergence. Gives a really good solution in under 10s
+	even for >100 sized qap's. And even better one in 60s, even tho it often converges almost everytime directly.
+
 	Compile with :
- 		g++ hybrid_ant_colony_threaded.cpp -o hybrid_ant_colony_threaded -pthread -Ofast
+ 		g++ hybrid_ant_colony_fast.cpp -o hybrid_ant_colony_fast -pthread -Ofast
+
+ 	Run with :
+ 		./hybrid_ant_colony_fast [path_to_qap_file.dat] ([maxtime] [-v for verbose mode])
+
+ 	Sources in ./sources/ directory.
 */
 #include <iostream>
-#include <iomanip> // to fix float decimal while printing
+#include <iomanip>
 #include <fstream>
 #include <string>
 #include <vector>
-#include <numeric> // iota
+#include <numeric>
 #include <random>
-#include <algorithm> // shuffle, sort
+#include <algorithm>
 #include <chrono>
 #include <limits>
 #include <thread>

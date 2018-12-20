@@ -1,15 +1,35 @@
 /**
+	Third algorithm.
+
+	Diversification-oriented version of hybrid_ant_colony_tabu. Gives better solution than hybrid_ant_colony_tabu
+	and hybrid_ant_colony_fast for long computation time. It is designed so it doesn't converge.
+
+	What's different :
+		- Uses tabu search to initialize ant's solutions.
+		- Uses tabu search for diversification step.
+		- Number of ants = size of the QAP, instead of fixed 10.
+		- q parameter changes depending on itensification phases, if intensification is not triggered, 
+		ants will take more "random" decisions.
+		- Doesn't trigger intensification when it reinitializes.
+		- Keeping track of "this_era_best_permutation", being the best permutation since reinitialize() was 
+		called. 
+		- Dropping pheromones on all_time_best_permutation and this_era_best_permutation to avoid convergence.
+		- Ants are COMPLETLY wiped during diversification, no best solution is kept.
+
 	Compile with :
- 		g++ hybrid_ant_colony_threaded.cpp -o hybrid_ant_colony_threaded -pthread -Ofast
+ 		g++ hybrid_ant_colony_diverse.cpp -o hybrid_ant_colony_diverse -pthread -Ofast
+
+ 	Run with :
+ 		./hybrid_ant_colony_diverse [path_to_qap_file.dat] ([maxtime] [-v for verbose mode])
 */
 #include <iostream>
-#include <iomanip> // to fix float decimal while printing
+#include <iomanip>
 #include <fstream>
 #include <string>
 #include <vector>
-#include <numeric> // iota
+#include <numeric>
 #include <random>
-#include <algorithm> // shuffle, sort
+#include <algorithm>
 #include <chrono>
 #include <limits>
 #include <thread>
@@ -62,7 +82,7 @@ std::uniform_real_distribution<> zero_to_one(0.0,1.0);
 /**
 	Number of ants
 */
-const int N=10;
+int N;
 
 /**
 	Parameter used for initializing the pheromones matrix
@@ -72,7 +92,7 @@ const int Q=100;
 /**
 	Parameter for ant swap decision	
 */
-const float q=0.5;
+float q=0.1;
 
 /**
 	Parameter for pheromones decaying
@@ -102,7 +122,7 @@ int S=0;
 /**
 	intensification trigger
 */
-bool intensification=true;
+bool intensification=false;
 
 /**
  	True if first pass, or just reinitialized
@@ -196,6 +216,7 @@ int main(int argc, char** argv)
 	}
 	S_max=(int)size/2.0;
 	R=(int)size/3.0;
+	N=size;
 
 	threads = std::vector<std::thread>(N);
 
@@ -252,6 +273,7 @@ int main(int argc, char** argv)
 			if(!intensification)
 			{
 				intensification=true;
+				q=0.9;
 			}
 		}
 		else
@@ -264,6 +286,7 @@ int main(int argc, char** argv)
 		if(intensification && this_iteration_costs==previous_costs)
 		{
 			intensification=false;
+			q=0.1;
 		}
 
 		// Update costs, best era solution and all time best solution
@@ -347,8 +370,8 @@ void open_qap(std::string path, int &size, std::vector<std::vector<int>> &distan
 */
 void reinitialize()
 {
-	permutations=generate_permutation(N-1);
-	permutations.push_back(this_era_best_permutation);
+	permutations=generate_permutation(N);
+
 	for(auto &permutation : permutations)
 	{
 		HAS_tabu_search_procedure(permutation);
@@ -378,7 +401,8 @@ void reinitialize()
 
 	init_pheromones();
 
-	intensification=true;
+	intensification=false;
+	q=0.1;
 
 	S=0;
 }

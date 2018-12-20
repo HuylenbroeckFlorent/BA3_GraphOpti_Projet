@@ -1,15 +1,33 @@
 /**
+	Second algorithm.
+
+	Average speed for getting a good solution. For >100 sized qap,  can take up to one minute for initialization.
+	Uses tabu search in initialization and diversification instead of local search 
+	(~1000 times slower for those iterations).
+	When initialized though, it runs as fast as hybrid_ant_colony_fast, until diversification occurs.
+
+	What's different :
+		- Uses tabu search to initialize ant's solutions.
+		- Uses tabu search for diversification step.
+		- Doesn't trigger intensification dureing diversification step.
+
+	If I had infinite computing power/time, i'd go with this one as I'm sure it wouldn't converge and eventually
+	find the optimum.
+
 	Compile with :
- 		g++ hybrid_ant_colony_threaded.cpp -o hybrid_ant_colony_threaded -pthread -Ofast
+ 		g++ hybrid_ant_colony_tabu.cpp -o hybrid_ant_colony_tabu -pthread -Ofast
+
+ 	Run with :
+ 		./hybrid_ant_colony_tabu [path_to_qap_file.dat] ([maxtime] [-v for verbose mode])
 */
 #include <iostream>
-#include <iomanip> // to fix float decimal while printing
+#include <iomanip>
 #include <fstream>
 #include <string>
 #include <vector>
-#include <numeric> // iota
+#include <numeric>
 #include <random>
-#include <algorithm> // shuffle, sort
+#include <algorithm>
 #include <chrono>
 #include <limits>
 #include <thread>
